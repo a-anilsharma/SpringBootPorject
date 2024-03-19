@@ -1,5 +1,7 @@
 package com.ExamPortalBackEnd.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,7 +39,7 @@ public class QuizController {
 	
 	//get update category
 	@PutMapping("/")
-	public Quiz updateQuiz(Quiz quiz) {
+	public Quiz updateQuiz( @RequestBody Quiz quiz) {
 		
 	   return	this.quizService.updateQuiz(quiz);
 	   
@@ -67,7 +69,25 @@ public class QuizController {
 		
 	} 
 	
+	@GetMapping("/category/{cid}")
+	public List<Quiz>  getQuizzesOfCategory(@PathVariable ("cid") Long cid){
+	
+	Category category=new Category();
+	category.setCid(cid);
+	 return this.quizService.getQuizzesOfCategory(category);
+	}
+	
+	@GetMapping("/active")
+	public List<Quiz>  getActiveQuizzes(){
+	 return this.quizService.getActiveQuizzes();
+	}
 
+	@GetMapping("/category/active/{cid}")
+	public List<Quiz>  getActiveQuizzesOfCategoryForUser(@PathVariable ("cid") Long cid){
+		Category category=new Category();
+		category.setCid(cid);
+	 return this.quizService.getActiveQuizzesOfCategory(category);
+	}
 	
 }
 

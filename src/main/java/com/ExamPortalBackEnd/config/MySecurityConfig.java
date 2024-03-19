@@ -43,7 +43,7 @@ public class MySecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
         //.cors(cors->cors.disable())
-        .authorizeRequests(auth->auth.requestMatchers("/generate-token","/current-user","/user/","/category/","/quiz/*").permitAll().anyRequest().authenticated())
+        .authorizeRequests(auth->auth.requestMatchers("/generate-token","/current-user","/user/","/category/","/quiz/*","/quiz/category/","/quiz/active","/quiz/category/active/","/question/quiz/*","/question/","/question/quiz/admin/*","/question/eval-quiz").permitAll().anyRequest().authenticated())
              //   requestMatchers("/test").authenticated().requestMatchers("/generate-token").permitAll()
                 //.anyRequest()
                 //.authenticated()

@@ -3,7 +3,9 @@ package com.ExamPortalBackEnd.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ExamPortalBackEnd.Entity.Exam.Category;
 import com.ExamPortalBackEnd.Entity.Exam.Question;
 import com.ExamPortalBackEnd.Entity.Exam.Quiz;
 import com.ExamPortalBackEnd.service.QuestionService;
@@ -73,6 +77,17 @@ public class QuestionController {
 //		Set<Question> questionsOfQuiz=this.questionService.getQuestionOfQuiz(quiz);
 //		return ResponseEntity.ok(questionsOfQuiz);
 	}
+	//get All question and quiz
+		@GetMapping("/quiz/admin/{qid}")
+		public ResponseEntity<?> getQuestionOfQuizForAdmin(@PathVariable("qid") Long qid){
+		
+					
+			//send all question of quiz
+			Quiz quiz=new Quiz();
+			quiz.setQid(qid);
+			Set<Question> questionsOfQuiz=this.questionService.getQuestionOfQuiz(quiz);
+			return ResponseEntity.ok(questionsOfQuiz);
+		}
 	
 	
 	//Get single quesiton
@@ -86,10 +101,38 @@ public class QuestionController {
 		
 		this.questionService.deleteQuestion(qid);
 		
+	}
+	@PostMapping("/eval-quiz")
+	public ResponseEntity<?>  evalQuiz(@RequestBody List<Question> questions){
+		double marksGot=0.0;
+		int correctAnswers=0;
+		int attempted=0;
+		for(Question q:questions) {
+		
+			Question question=this.questionService.getQuestion(q.getQuesId());
+			
+			if(question.getAnswer().equals(q.getGivenAnswer())) {
+				
+				correctAnswers++;
+				 double singleMarks=   Double.parseDouble(q.getQuiz().getMaxMarks())/questions.size();
+				 marksGot+=	singleMarks; 
+				
+			}
+			if(q.getGivenAnswer()!=null && !"".equals(q.getGivenAnswer().trim())) {
+				attempted++;
+				
+			}
+		}
+		Map<String,Object> result=new HashMap<>();
+		result.put("marksGot", marksGot);
+		result.put("correctAnswers",correctAnswers);
+		result.put("attempted",attempted);
+		
+		return ResponseEntity.ok(result);
 		
 	}
 	
 	
 	
-
+	
 }
